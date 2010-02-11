@@ -25,7 +25,7 @@ sub build_form_class {
     return ref( $self ) . '::' . $self->source_name . 'Form';
 }
 
-sub auto : Local {
+sub auto : Action {
     my ( $self, $c ) = @_;
     $c->stash->{additional_template_paths} = [ dir( $c->config->{root}, lc $self->source_name) . '', $c->config->{root} . ''];
 }
@@ -55,7 +55,7 @@ sub index : Private {
     $c->forward('list');
 }
 
-sub destroy : Local {
+sub destroy : Action {
     my ( $self, $c, @pks ) = @_;
     if ( $c->req->method eq 'POST' ) {
         $self->model_item( $c, @pks )->delete;
@@ -73,7 +73,7 @@ END
     }
 }
 
-sub edit : Local {
+sub edit : Action {
     my ( $self, $c, @pks ) = @_; 
     my @ids;
     @ids = ( item_id => [ @pks ] ) if @pks;
@@ -97,7 +97,7 @@ sub edit : Local {
     $c->stash( form => $form->render );
 }
 
-sub view : Local {
+sub view : Action {
     my ( $self, $c, @pks ) = @_;
     die "You need to pass an id" unless @pks;
     my $item = $self->model_item( $c, @pks );
@@ -141,7 +141,7 @@ sub create_col_link {
     };
 }
 
-sub list : Local {
+sub list : Action {
     my ( $self, $c ) = @_;
     my $result = $self->get_resultset($c);
     $c->stash->{pager}     = $result->pager;
