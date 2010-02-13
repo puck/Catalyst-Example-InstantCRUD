@@ -5,6 +5,8 @@ BEGIN {
        extends 'Catalyst::Controller';
 }
 
+with 'Catalyst::Component::ContextClosure';
+
 use Carp;
 use Data::Dumper;
 use Path::Class;
@@ -149,7 +151,9 @@ sub list : Action {
     $c->stash->{pager}     = $result->pager;
     my $source  = $result->result_source;
     ($c->stash->{pri}) = $source->primary_columns;
-    $c->stash->{order_by_column_link} = $self->create_col_link($c, $source);
+    $c->stash->{order_by_column_link} = $self->make_context_closure(
+        sub { $self->create_col_link(shift, $source) }
+    , $c );
     $c->stash->{result} = $result;
 }
 
