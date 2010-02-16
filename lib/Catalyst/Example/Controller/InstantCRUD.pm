@@ -128,21 +128,21 @@ sub get_resultset {
 sub create_col_link {
     my ( $self, $c, $source ) = @_;
     my $origparams = $c->request->params;
-    return sub {
-        my ( $column, $label ) = @_;
+    return $self->make_context_closure(sub {
+        my ( $ctx, $column, $label ) = @_;
         my $addr;
         no warnings 'uninitialized';
         if ( $origparams->{'order'} eq $column && !$origparams->{'o2'} ) {
-            $addr = $c->request->uri_with({ page => 1, order =>  $column, o2 => 'desc' });
+            $addr = $ctx->request->uri_with({ page => 1, order =>  $column, o2 => 'desc' });
         }else{
-            $addr = $c->request->uri_with({ page => 1, order =>  $column, o2 => undef });
+            $addr = $ctx->request->uri_with({ page => 1, order =>  $column, o2 => undef });
         }
         my $result = qq{<a href="$addr">$label</a>};
         if ( $origparams->{'order'} && $column eq $origparams->{'order'} ) {
             $result .= $origparams->{'o2'} ? "&darr;" : "&uarr;";
         }
         return $result;
-    };
+    }, $c);
 }
 
 sub list : Action {
@@ -151,9 +151,7 @@ sub list : Action {
     $c->stash->{pager}     = $result->pager;
     my $source  = $result->result_source;
     ($c->stash->{pri}) = $source->primary_columns;
-    $c->stash->{order_by_column_link} = $self->make_context_closure(
-        sub { $self->create_col_link(shift, $source) }
-    , $c );
+    $c->stash->{order_by_column_link} = $self->create_col_link($c, $source);
     $c->stash->{result} = $result;
 }
 
