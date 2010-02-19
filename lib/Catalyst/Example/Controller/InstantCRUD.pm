@@ -35,7 +35,11 @@ sub auto : Action {
 sub model_item {
     my ( $self, $c, @pks ) = @_;
     my $rs = $self->model_resultset($c);
-    my $item = $rs->find( @pks, { key => 'primary' });
+    my @pk_columns = $rs->result_source->primary_columns;
+    my $data = {
+        map { $pk_columns[$_] => $pks[$_] } 0..$#pk_columns
+    };
+    my $item = $rs->find($data, { key => 'primary' });
     return $item;
 }
 
@@ -111,14 +115,19 @@ sub view : Action {
 sub get_resultset {
     my ( $self, $c ) = @_;
     my $params = $c->request->params;
-    my $order  = $params->{'order'};
+    my $order = $params->{'order'};
     $order .= ' DESC' if $params->{'o2'};
+    my $join;
+    if ( $order && $order =~ m/(\w+)\.\w+/ ) {
+        $join = $1;
+    }
     my $maxrows = $c->config->{InstantCRUD}{maxrows} || 10;
     my $page = $params->{'page'} || 1;
     return $self->model_resultset($c)->search(
         {},
         {
             page     => $page,
+            $join ? ( join => $join ) : (),
             order_by => $order,
             rows     => $maxrows,
         }
