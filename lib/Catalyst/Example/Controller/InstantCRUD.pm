@@ -90,10 +90,10 @@ sub edit : Action {
         params => $c->req->params, 
         @ids,
     );
+    my $item = $form->item;
     if( $c->req->method eq 'POST' && $form->process() ){
-        my $item = $form->item;
+        $item = $form->item;
         $c->res->redirect( $c->uri_for_action( $self->action_for('view'), $item->id ) );
-        $c->stash( item => $item );
     }
     if( @pks ){
         $form->field( 'submit' )->value( 'Update' );
@@ -102,7 +102,10 @@ sub edit : Action {
         $form->field( 'submit' )->value( 'Create' );
     }
 
-    $c->stash( form => $form->render );
+    $c->stash(
+        form => $form->render,
+        item => $item,
+    );
 }
 
 sub view : Action {
