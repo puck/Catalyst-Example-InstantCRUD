@@ -55,6 +55,7 @@ sub mk_compclass {
         $helper->{field_configs} = _get_column_config( $schema, $class, $m2m ) ;
         my $source = $schema->source($class);
         $helper->{primary_keys} = [ $source->primary_columns ];
+        $helper->{base_pathpart} = '/' . lc $class . '/';
         $helper->render_file( list => file( $classdir, 'list.tt' ));
         $helper->render_file( view => file( $classdir, 'view.tt' ));
     }
@@ -185,7 +186,7 @@ __list__
     </td>
     <+ END +> 
     [% SET id = row.$pri %]
-    <td><a href="[% c.uri_for( <+ IF rest +>'by_id'<+ ELSE +>'view'<+ END +>, <+ FOR key = primary_keys +>row.<+ key +>, <+ END +> ) %]">View</a></td>
+    <td><a href="[% c.uri_for_action( <+ base_pathpart +><+ IF rest +>'by_id'<+ ELSE +>'view'<+ END +>, [], <+ FOR key = primary_keys +>row.<+ key +>, <+ END +> ) %]">View</a></td>
     <td><a href="[% c.uri_for( <+ IF rest +>'by_id'<+ ELSE +>'edit'<+ END +>, <+ FOR key = primary_keys +>row.<+ key +>, <+ END +><+ IF rest +>,'edit'<+ END +> ) %]">Edit</a></td>
     <td><a href="[% c.uri_for( <+ IF rest +>'by_id'<+ ELSE +>'destroy'<+ END +>, <+ FOR key = primary_keys +>row.<+ key +>, <+ END +><+ IF rest +>,'destroy'<+ END +> ) %]">Delete</a></td>
     </tr>
@@ -243,7 +244,7 @@ __edit__
 <br>
 <a href="[% c.uri_for( 'list' ) %]">List</a>
 <hr>
-[% form %]
+[% form.render %]
 __pager__
 [% IF pager %]
 <div class="pager">

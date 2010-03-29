@@ -103,7 +103,7 @@ sub edit : Action {
     }
 
     $c->stash(
-        form => $form->render,
+        form => $form,
         item => $item,
     );
 }
