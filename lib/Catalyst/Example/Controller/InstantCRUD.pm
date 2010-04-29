@@ -66,11 +66,11 @@ sub destroy : Action {
     if ( $c->req->method eq 'POST' ) {
         $self->model_item( $c, @pks )->delete;
         $c->res->redirect(
-            $c->uri_for_action( $self->action_for('list') )
+            $c->uri_for( $self->action_for('list') )
         );
     }
     else {
-        my $action_uri = $c->uri_for_action( $self->action_for('destroy'), @pks);
+        my $action_uri = $c->uri_for( $self->action_for('destroy'), @pks);
         $c->stash->{destroywidget} = <<END;
 <form action="$action_uri" id="widget" method="post">
 <fieldset class="widget_fieldset">
@@ -93,7 +93,7 @@ sub edit : Action {
     my $item = $form->item;
     if( $c->req->method eq 'POST' && $form->process() ){
         $item = $form->item;
-        $c->res->redirect( $c->uri_for_action( $self->action_for('view'), $item->id ) );
+        $c->res->redirect( $c->uri_for( $self->action_for('view'), $item->id ) );
     }
     if( @pks ){
         $form->field( 'submit' )->value( 'Update' );

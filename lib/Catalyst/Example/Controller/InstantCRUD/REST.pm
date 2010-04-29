@@ -71,7 +71,7 @@ sub by_id_PUT : Action {
         my $item = $form->item;
         my @new_pks = map { $item->$_ } @model_pks;
         $c->res->redirect(
-            $c->uri_for_action( $self->action_for('by_id'), @new_pks )
+            $c->uri_for( $self->action_for('by_id'), @new_pks )
         );
     }
     else{ 
