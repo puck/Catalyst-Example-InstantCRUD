@@ -24,7 +24,7 @@ sub mk_controller {
     my( $helper, $class, $schema, $m2m ) = @_;
     $helper->{class} = $helper->{app} . '::Controller::' . $class;
     $helper->{base_pathpart} = lc $class;
-    (my $file = $helper->{file})  =~ s/InstantCRUD/$class/;
+    (my $file = $helper->{file})  =~ s/InstantCRUD\.pm$/$class\.pm/;
     my $generator = HTML::FormHandler::Generator::DBIC->new( 
         schema => $schema, 
         class_prefix => $helper->{class}, 
