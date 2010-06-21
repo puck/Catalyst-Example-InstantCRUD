@@ -230,6 +230,7 @@ sub create_example_db {
 #        warn "executing: \n$statement";
         $dbh->do($statement) or die $dbh->errstr;
     }
+    $dbh->disconnect;
 }
 
 
