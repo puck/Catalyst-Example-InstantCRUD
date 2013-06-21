@@ -71,6 +71,7 @@ __PACKAGE__->config(
 );
 [% ELSE %]
 extends "Catalyst::Example::Controller::InstantCRUD";
+[% END %]
 };
 
 [% form_code %]
