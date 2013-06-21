@@ -11,8 +11,9 @@ use File::Slurp;
 use Catalyst::Helper::InstantCRUD;
 use Catalyst::Utils;
 use Data::Dumper;
-use DBIx::Class::Schema::Loader qw/ make_schema_at /;
-use DBIx::Class::Schema::Loader::RelBuilder;
+#use DBIx::Class::Schema::Loader qw/ make_schema_at /;
+#use DBIx::Class::Schema::Loader::RelBuilder;
+use Catalyst::Helper;
 use List::Util qw(first);
 use DBI;
 use Lingua::EN::Inflect::Phrase;
@@ -83,6 +84,7 @@ if( ! $dsn ){
 }
 
 my $helper = Catalyst::Helper::InstantCRUD->new( {
+#my $helper = Catalyst::Helper->new( {
     '.newfiles'   => !$nonew,
     'scripts'     => $scripts,
     'short'       => $short,
@@ -110,27 +112,13 @@ if( $db_file ){
 local $FindBin::Bin = dir($appdir, 'script');
 
 my $full_schema_name = $appname . '::' . $schema_name;
-make_schema_at(
-    $full_schema_name,
-    { 
-#        debug => 1, 
-        dump_directory => dir( $appdir , 'lib')->absolute->stringify, 
-        use_namespaces => 1,
-#        default_resultset_class => '+DBIx::Class::ResultSet::RecursiveUpdate', 
-        components => [ 'InflateColumn::DateTime', 'UTF8Columns' ],
-    },
-    [ $dsn, $duser, $dpassword ],
-);
 
-#{
-#    no strict 'refs';
-#    @{"$schema_name\::ISA"} = qw/DBIx::Class::Schema::Loader/;
-#    $schema_name->loader_options(relationships => 1, exclude => qr/^sqlite_sequence$/);
-#}
+$helper->mk_component($appname, "model" , $model_name, "DBIC::Schema", $full_schema_name, "create=static" , $dsn, $duser, $dpassword );
 
 my $schema = $full_schema_name->connect(); #$dsn, $duser, $dpassword);
 
 my ( $m2m, $bridges ) = guess_m2m( $schema );
+
 for my $result_class ( $schema->sources ){ 
     my $result_source = $schema->source( $result_class );
     my $overload_method = first { $_ =~ /name/i } $result_source->columns;
@@ -139,26 +127,26 @@ for my $result_class ( $schema->sources ){
     my $file = file( $appdir, 'lib', @path, 'Result', $result_class . '.pm' )->absolute->stringify;
     my $content = File::Slurp::slurp( $file );
     my $addition = q/use overload '""' => sub {$_[0]->/ . $overload_method . "}, fallback => 1;\n";
-    for my $m ( @{$m2m->{$result_class}} ){
-        my $a0 = $m->[0];
-        my $a1 = $m->[1];
-        my $a2 = $m->[2];
-        $addition .= "__PACKAGE__->many_to_many('$a0', '$a1' => '$a2');\n";
-    }
+
+    # m2m relations are correctly created by DBIC::Schema::Loader
+    #for my $m ( @{$m2m->{$result_class}} ){
+        #my $a0 = $m->[0];
+        #my $a1 = $m->[1];
+        #my $a2 = $m->[2];
+        #$addition .= "__PACKAGE__->many_to_many('$a0', '$a1' => '$a2');\n";
+    #}
+
     my @columns = $result_source->columns;
-    $addition .= "__PACKAGE__->utf8_columns(qw/@columns/);\n";
-    $content =~ s/1;\s*/$addition\n1;/;
+    # utf8columns is deprecated
+    #$addition .= "__PACKAGE__->utf8_columns(qw/@columns/);\n";
+    #$content =~ s/1;\s*/$addition\n1;/;
+    $content =~ s/(__PACKAGE__->meta->make_immutable;.*)/$addition\n$1/;
     File::Slurp::write_file( $file, $content );
 }
 
 # Controllers
 $helper->mk_component ( $appname, 'controller', 'InstantCRUD', 'InstantCRUD',
   $schema, $m2m,
-);
-
-# Model
-$helper->mk_component ( $appname, 'model', $model_name, 'DBIC::Schema', 
-  $appname . '::' . $schema_name,
 );
 
 # View and Templates
@@ -212,7 +200,7 @@ sub guess_m2m {
     }
     return \%m2m, \%bridges;
 }
-    
+
 sub create_example_db {
     my $filename = shift;
     my $dsn ||= 'dbi:SQLite:dbname=' . $filename;
@@ -398,7 +386,7 @@ INSERT INTO "dvdtag" VALUES(1,4);
 INSERT INTO "dvdtag" VALUES(1,6);
 CREATE TABLE role (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  role VARCHAR(255)
+  name VARCHAR(255)
 );
 INSERT INTO "role" VALUES(1,'Write');
 INSERT INTO "role" VALUES(2,'Read');
