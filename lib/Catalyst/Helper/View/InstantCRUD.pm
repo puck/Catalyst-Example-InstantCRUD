@@ -459,7 +459,7 @@ fieldset textarea
 label {  
 	float: left;  
 	width: 120px;  
-	margin: 8px 10px 8px 0;	
+	margin: 4px 10px 4px 0;	
 	text-align: right;
 }
 
