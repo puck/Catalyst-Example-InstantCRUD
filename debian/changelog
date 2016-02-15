@@ -1,0 +1,5 @@
+libcatalyst-example-instantcrud-perl (0.035-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Andrew Ruthven <puck@build-jessie-amd64.wgtn.cat-it.co.nz>  Mon, 1 Feb 2016 11:11:36 +1300

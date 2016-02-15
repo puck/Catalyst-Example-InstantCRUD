@@ -1,0 +1,52 @@
+Source: libcatalyst-example-instantcrud-perl
+Section: perl
+Priority: optional
+Maintainer: Andrew Ruthven <puck@build-jessie-amd64.wgtn.cat-it.co.nz>
+Build-Depends: debhelper (>= 9)
+Build-Depends-Indep: libcatalyst-devel-perl (>= 1.00),
+ libcatalyst-model-dbic-schema-perl (>= 0.29),
+ libcatalyst-perl (>= 5.8000),
+ libcatalyst-plugin-configloader-perl,
+ libcatalyst-plugin-session-state-cookie-perl,
+ libcatalyst-plugin-session-store-fastmmap-perl,
+ libcatalyst-plugin-static-simple-perl,
+ libcatalyst-plugin-unicode-perl,
+ libcatalyst-view-tt-perl (>= 0.21),
+ libdbix-class-perl (>= 0.08003),
+ libdbix-class-resultset-recursiveupdate-perl,
+ libdbix-class-schema-loader-perl (>= 0.03),
+ libfile-slurp-perl,
+ libhtml-formhandler-model-dbic-perl (>= 0.04),
+ libhtml-formhandler-perl (>= 0.26),
+ libpath-class-perl,
+ libstring-random-perl,
+ perl
+Standards-Version: 3.9.6
+Homepage: https://metacpan.org/release/Catalyst-Example-InstantCRUD
+
+Package: libcatalyst-example-instantcrud-perl
+Architecture: all
+Depends: ${misc:Depends}, ${perl:Depends},
+ libcatalyst-devel-perl (>= 1.00),
+ libcatalyst-model-dbic-schema-perl (>= 0.29),
+ libcatalyst-perl (>= 5.8000),
+ libcatalyst-plugin-configloader-perl,
+ libcatalyst-plugin-session-state-cookie-perl,
+ libcatalyst-plugin-session-store-fastmmap-perl,
+ libcatalyst-plugin-static-simple-perl,
+ libcatalyst-plugin-unicode-perl,
+ libcatalyst-view-tt-perl (>= 0.21),
+ libdbix-class-perl (>= 0.08003),
+ libdbix-class-resultset-recursiveupdate-perl,
+ libdbix-class-schema-loader-perl (>= 0.03),
+ libfile-slurp-perl,
+ libhtml-formhandler-model-dbic-perl (>= 0.04),
+ libhtml-formhandler-perl (>= 0.26),
+ libpath-class-perl,
+ libstring-random-perl
+Description: A CRUD scaffolding for Catalyst.
+ Catalyst based application.
+ .
+ Root Controller for this Catalyst based application.
+ .
+ This description was automagically extracted from the module by dh-make-perl.
