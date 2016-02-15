@@ -94,7 +94,12 @@ sub build_form {
 
 sub edit : Action {
     my ( $self, $c, @pks ) = @_; 
-    my $form = $self->build_form($c, @pks);
+    my $rs = $self->model_resultset($c);
+    my @pk_columns = $rs->result_source->primary_columns;
+    my $data = {
+        map { $pk_columns[$_] => $pks[$_] } 0..$#pk_columns
+    };
+    my $form = $self->build_form($c, $data);
     my $item = $form->item;
     if( $c->req->method eq 'POST' && $form->process() ){
         $item = $form->item;
