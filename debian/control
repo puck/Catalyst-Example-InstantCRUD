@@ -2,7 +2,12 @@ Source: libcatalyst-example-instantcrud-perl
 Section: perl
 Priority: optional
 Maintainer: Andrew Ruthven <puck@build-jessie-amd64.wgtn.cat-it.co.nz>
-Build-Depends: debhelper (>= 9)
+Build-Depends: debhelper (>= 9),
+  libdbd-sqlite3-perl,
+  libtest-www-mechanize-catalyst-perl,
+  libtest-pod-perl,
+  libcatalyst-action-renderview-perl,
+  libdatetime-format-sqlite-perl
 Build-Depends-Indep: libcatalyst-devel-perl (>= 1.00),
  libcatalyst-model-dbic-schema-perl (>= 0.29),
  libcatalyst-perl (>= 5.8000),
@@ -20,6 +25,7 @@ Build-Depends-Indep: libcatalyst-devel-perl (>= 1.00),
  libhtml-formhandler-perl (>= 0.26),
  libpath-class-perl,
  libstring-random-perl,
+ libcatalyst-action-rest-perl,
  perl
 Standards-Version: 3.9.6
 Homepage: https://metacpan.org/release/Catalyst-Example-InstantCRUD
