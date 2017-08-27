@@ -1,0 +1,2 @@
+# Don't store changes on test temp files
+extend-diff-ignore = "(^|/)t/tmp/.*$"
