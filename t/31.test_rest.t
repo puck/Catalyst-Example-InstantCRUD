@@ -8,7 +8,11 @@ use lib 't/tmp/DVDzbr_rest/lib';
 
 eval "use Test::WWW::Mechanize::Catalyst 'DVDzbr_rest'";
 if ($@){
-    plan skip_all => "Test::WWW::Mechanize::Catalyst required for testing application";
+    if ($@ =~ m|Can't locate Test/WWW/Mechanize/Catalyst.pm|) {
+        plan skip_all => "Test::WWW::Mechanize::Catalyst required for testing application";
+    } else {
+        die $@;
+    }
 }else{
     plan tests => 2;
     #plan tests => 'no_plan';

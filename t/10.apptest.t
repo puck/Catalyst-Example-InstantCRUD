@@ -10,7 +10,11 @@ use lib 't/tmp/My-App/lib';
 
 eval "use Test::WWW::Mechanize::Catalyst 'My::App'";
 if ($@){
-    plan skip_all => "Test::WWW::Mechanize::Catalyst required for testing application";
+    if ($@ =~ m|Can't locate Test/WWW/Mechanize/Catalyst.pm|) {
+        plan skip_all => "Test::WWW::Mechanize::Catalyst required for testing application";
+    } else {
+        die $@;
+    }
 }else{
     plan tests => 24;
 }

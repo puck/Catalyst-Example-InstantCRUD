@@ -8,7 +8,11 @@ use lib 't/tmp/DVDzbr/lib';
 
 eval "use Test::WWW::Mechanize::Catalyst 'DVDzbr'";
 if ($@){
-    plan skip_all => "Test::WWW::Mechanize::Catalyst required for testing application";
+    if ($@ =~ m|Can't locate Test/WWW/Mechanize/Catalyst.pm|) {
+        plan skip_all => "Test::WWW::Mechanize::Catalyst required for testing application";
+    } else {
+        die $@;
+    }
 }else{
     plan tests => 20;
     #plan tests => 'no_plan';
@@ -119,6 +123,8 @@ $mech->submit_form(
 
 $mech->content_contains('Jurassic Park II', "DVD added");
 $mech->content_like(qr/Tags[^A]+Action/, "DVD added with Tag");
+
+diag $mech->content;
 $mech->get_ok("/dvd", "Listing DVD's");
 $mech->content_contains("Jurassic Park II", "DVD Listed");
 $mech->content_contains("Action", "Related Tag Listed");
